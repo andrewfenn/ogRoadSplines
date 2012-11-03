@@ -58,14 +58,14 @@ CRoadEditor::CRoadEditor(CBaseEditorFactory *factory) : CNodeEditor(factory)
 	PROPERTY_PTR(mRoadTesselation, "tesselation"   ,Ogre::Real   ,0.0f       ,0,SETTER(Ogre::Real, CRoadEditor, _setTesselation));
 	PROPERTY_PTR(mRoadWidth       , "width"   ,Ogre::Real   ,0.0f       ,0,SETTER(Ogre::Real, CRoadEditor, _setWidth));
 
-	EventManager::Instance()->connectEvent("undomanager_notification", this, true, 0, true, 0, EVENT_CALLBACK(CRoadEditor, onUndoManagerNotification));
-	EventManager::Instance()->connectEvent("terrain_editor_change", this, true, 0, true, 0, EVENT_CALLBACK(CRoadEditor, onTerrainEditorChange));
+	EventManager::getSingletonPtr()->connectEvent("undomanager_notification", this, true, 0, true, 0, EVENT_CALLBACK(CRoadEditor, onUndoManagerNotification));
+	EventManager::getSingletonPtr()->connectEvent("terrain_editor_change", this, true, 0, true, 0, EVENT_CALLBACK(CRoadEditor, onTerrainEditorChange));
 }  
 
 CRoadEditor::~CRoadEditor()
 {
-	EventManager::Instance()->disconnectEvent("undomanager_notification", this);
-	EventManager::Instance()->disconnectEvent("terrain_editor_change", this);
+	EventManager::getSingletonPtr()->disconnectEvent("undomanager_notification", this);
+	EventManager::getSingletonPtr()->disconnectEvent("terrain_editor_change", this);
 }
 
 void CRoadEditor::onUndoManagerNotification(Ogitors::IEvent* evt)

@@ -53,7 +53,6 @@ if(WIN32)
 	)
 endif(WIN32)
 
-include_directories(SYSTEM ${OIS_INCLUDE_DIRS})
 include_directories(SYSTEM ${OGRE_INCLUDE_DIRS})
 include_directories(SYSTEM ${OGRE_Terrain_INCLUDE_DIR})
 include_directories(SYSTEM ${OGRE_Paging_INCLUDE_DIR})
@@ -73,6 +72,7 @@ set(RoadSplinesSource
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Road.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/RoadEditor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/RoadPointEditor.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/RoadRenderListener.cpp
 )
 
 add_library(RoadSplines SHARED ${RoadSplinesSource})
@@ -94,7 +94,6 @@ if(APPLE)
         ${OGRE_LIBRARIES} ${OGRE_Terrain_LIBRARY} ${OGRE_Paging_LIBRARY}
         ${Ogitor_LIBRARIES}
         ${OFS_LIBRARIES}
-        ${OIS_LIBRARIES}
         ${Boost_LIBRARIES}
 
         ${Carbon_LIBRARIES}
@@ -105,7 +104,6 @@ else()
         ${OGRE_LIBRARIES} ${OGRE_Terrain_LIBRARY} ${OGRE_Paging_LIBRARY}
         ${Ogitor_LIBRARIES}
         ${OFS_LIBRARIES}
-        ${OIS_LIBRARIES}
         ${Boost_LIBRARIES}
     )
 endif(APPLE)
@@ -121,5 +119,3 @@ if (UNIX AND NOT APPLE)
             LIBRARY DESTINATION lib/ogitor)
 endif()
 
-
-# vim: set sw=2 ts=2 noet:
