@@ -1,0 +1,19 @@
+
+[Vertex shader]
+
+float4x4 transform;
+
+PsIn main(float Size, float Factor, float3 V0, float3 V1, uint VertexID : SV_VertexID)
+{
+	PsIn Out;
+
+	// Construct a box
+	float4 position;
+	position.x = (VertexID & 1)? 1.0f : -1.0f;
+	position.y = (VertexID & 2)? 1.0f : -1.0f;
+	position.z = (VertexID & 4)? 1.0f : -1.0f;
+	position.w = 1.0f;
+	Out.position = mul(transform, position);
+
+	return Out;
+}

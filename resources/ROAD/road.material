@@ -1,0 +1,23 @@
+material Road/RoadMaterial
+ {
+    technique
+    {
+		pass 0
+		{
+			param_indexed_auto 0 viewproj_matrix
+
+			source RoadVertexPass.shd
+			entry_point main   
+			syntax vs_2_0    
+		}
+
+		pass 1
+		{
+			param_indexed_auto 0 viewproj_matrix
+
+			source RoadFragmentPass.shd
+			entry_point main
+			syntax ps_2_0
+		}
+    }
+ }

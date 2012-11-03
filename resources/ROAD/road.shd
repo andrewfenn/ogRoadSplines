@@ -1,0 +1,81 @@
+
+struct PsIn
+{
+	float4 position : SV_Position;
+};
+
+[Vertex shader]
+
+float4x4 transform;
+
+PsIn main(uint VertexID: SV_VertexID)
+{
+	PsIn Out;
+
+	// Construct a box
+	float4 position;
+	position.x = (VertexID & 1)? 1.0f : -1.0f;
+	position.y = (VertexID & 2)? 1.0f : -1.0f;
+	position.z = (VertexID & 4)? 1.0f : -1.0f;
+	position.w = 1.0f;
+	Out.position = mul(transform, position);
+
+	return Out;
+}
+
+
+[Fragment shader]
+
+Texture2D Depth;
+Texture2D Road;
+SamplerState filter;
+
+float4x4 reverse_transform;
+
+float4 main(PsIn In) : SV_Target
+{
+	int3 texCoord = int3(int2(In.position.xy), 0);
+
+	// Sample depth and neighbor depths
+	float d = Depth.Load(texCoord);
+	float dx0 = Depth.Load(texCoord, int2(-1,  0));
+	float dx1 = Depth.Load(texCoord, int2(+1,  0));
+	float dy0 = Depth.Load(texCoord, int2( 0, -1));
+	float dy1 = Depth.Load(texCoord, int2( 0, +1));
+
+	// Construct screen position
+	float4 screen_pos = float4(In.position.xy, d, 1.0f);
+
+	// Find suitable neighbor screen positions in x and y so we can compute proper gradients
+	// Select based on the smallest different in depth
+	float4 screen_pos_x, screen_pos_y;
+	if (abs(dx0 - d) < abs(dx1 - d))
+		screen_pos_x = float4(In.position.xy + float2(-1.0f, 0.0f), dx0, 1.0f);
+	else
+		screen_pos_x = float4(In.position.xy + float2( 1.0f, 0.0f), dx1, 1.0f);
+
+	if (abs(dy0 - d) < abs(dy1 - d))
+		screen_pos_y = float4(In.position.xy + float2(0.0f, -1.0f), dy0, 1.0f);
+	else
+		screen_pos_y = float4(In.position.xy + float2(0.0f,  1.0f), dy1, 1.0f);
+
+	// Compute the local position in the box for center and selected neighbors
+	float4 local_pos   = mul(reverse_transform, screen_pos);
+	float4 local_pos_x = mul(reverse_transform, screen_pos_x);
+	float4 local_pos_y = mul(reverse_transform, screen_pos_y);
+
+	// Compute texture coordinates
+	float2 local_coord   = (local_pos.zx   / local_pos.w);
+	float2 local_coord_x = (local_pos_x.zx / local_pos_x.w);
+	float2 local_coord_y = (local_pos_y.zx / local_pos_y.w);
+
+	// Compute gradients and sample texture
+	float2 dx = local_coord - local_coord_x;
+	float2 dy = local_coord - local_coord_y;
+	float4 road = Road.SampleGrad(filter, local_coord, dx, dy);
+
+	// Pre-multiply alpha so we can do lighting in the blender
+	road.rgb *= road.a;
+
+	return road;
+}
