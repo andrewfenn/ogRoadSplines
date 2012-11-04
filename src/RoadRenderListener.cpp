@@ -38,7 +38,6 @@ void RoadRenderListener::notifyRenderSingleObject(Renderable* rend,
 	{
 		Ogre::Matrix4 Transform, ReverseTransform, ModelvewProjection;
 		getTransformMatrices(ModelvewProjection, &Transform, &ReverseTransform, Ogre::Vector3::ZERO, Ogre::Vector3::ZERO);
-
 		Ogre::RenderSystem *pSystem = Ogre::Root::getSingletonPtr()->getRenderSystem();
 
 		if(pass->getIndex() == 0)
@@ -49,6 +48,7 @@ void RoadRenderListener::notifyRenderSingleObject(Renderable* rend,
 
 			pSystem->setStencilBufferParams(CMPF_ALWAYS_PASS, 0xFF, 0xFF, SOP_KEEP, SOP_INCREMENT,  SOP_KEEP, true);
 
+            return;
 			pass->getVertexProgram()->setParameter("transform", Ogre::StringConverter::toString(Transform));
 		}
 		else if(pass->getIndex() == 1)
@@ -59,6 +59,9 @@ void RoadRenderListener::notifyRenderSingleObject(Renderable* rend,
 			
 			pSystem->_setSceneBlending(SBF_DEST_ALPHA, SBF_ONE_MINUS_SOURCE_ALPHA);
 			pSystem->setStencilBufferParams(CMPF_NOT_EQUAL, 0xFF, 0xFF, SOP_KEEP, SOP_KEEP, SOP_ZERO, false);
+
+            if (pass->getVertexProgram().isNull())
+                return;
 
 			pass->getVertexProgram()->setParameter("transform", Ogre::StringConverter::toString(Transform));
 			pass->getVertexProgram()->setParameter("reverse_transform", Ogre::StringConverter::toString(ReverseTransform));
@@ -78,8 +81,8 @@ void RoadRenderListener::getTransformMatrices(Matrix4 ModelviewProjection, Matri
 	const float size = 30.0f; // Relatively large number, ideally should be computed to be only as big as necessary for a road segment
 	const float down_factor = 0.3f; // Move the box down a little to better use the box volume in normal cases for this demo
 
-    const int width = 1;
-    const int height = 1;
+    const int width = 10;
+    const int height = 10;
 
 	Matrix4 rot(
 		dir_x.x, dir_y.x, dir_z.x, mid.x,

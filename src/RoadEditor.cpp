@@ -266,7 +266,7 @@ CRoadEditorFactory::CRoadEditorFactory(OgitorsView *view) : CNodeEditorFactory(v
 	mEditorType = ETYPE_CUSTOM_MANAGER;
 	mAddToObjectList = true;
 	mRequirePlacement = true;
-	mIcon = "Icons/road.svg";
+	mIcon = "road.svg";
 	mCapabilities = CAN_DELETE | CAN_UNDO | CAN_MOVE;
 
 	OgitorsPropertyDef *definition;

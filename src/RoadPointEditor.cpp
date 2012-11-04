@@ -57,7 +57,7 @@ bool CRoadPointEditor::load(bool async)
 {
 	if(mLoaded->get())
         return true;
-    
+  
     mHandle = getParent()->getNode()->createChildSceneNode(mName->get(), mPosition->get(), mOrientation->get());
 
 	// Once road has been created, position it ON the terrain
@@ -121,7 +121,7 @@ CRoadPointEditorFactory::CRoadPointEditorFactory(OgitorsView *view) : CNodeEdito
 	mEditorType = ETYPE_MOVABLE;
 	mAddToObjectList = false;
 	mRequirePlacement = false;
-	mIcon = "Icons/road.svg";
+	mIcon = "road.svg";
 	mCapabilities = CAN_MOVE | CAN_FOCUS | CAN_DRAG | CAN_UNDO | CAN_CLONE;
 
 	OgitorsPropertyDef *definition;

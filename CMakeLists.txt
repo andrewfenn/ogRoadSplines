@@ -117,5 +117,16 @@ if (UNIX AND NOT APPLE)
     set_target_properties( RoadSplines PROPERTIES OUTPUT_NAME "OgRoadSplines" )
     install(TARGETS RoadSplines
             LIBRARY DESTINATION lib/ogitor)
+
+    file(GLOB ogroadsplines "${CMAKE_CURRENT_SOURCE_DIR}/resources/ROAD/*")
+    install(FILES ${ogroadsplines}
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/share/ogitor/Media/editorResources/OgRoadSplines
+    )
+
+    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/resources/road.svg
+        DESTINATION
+            ${CMAKE_INSTALL_PREFIX}/share/ogitor/Plugins/Icons
+    )
+
 endif()
 
